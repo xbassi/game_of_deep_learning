@@ -6,7 +6,8 @@
 This competition is based on image classification on the ship images dataset provided by Analytics Vidya.
 
 There are 5 classes overall.
-'Cargo': 1,  'Military': 2,  'Carrier': 3, 'Cruise': 4,  'Tankers': 5
+
+```'Cargo': 1,  'Military': 2,  'Carrier': 3, 'Cruise': 4,  'Tankers': 5```
 
 Cargo has 2120 images
 Military has 1167 images
@@ -16,7 +17,7 @@ Tanker has 1217 images
 
 Totally : 6252 images
 
-My Split -  (88% in train 12% in validation)
+Data Split -  (88% in train 12% in validation)
 5500 images in train
 752 images in validation
 (As seen in the makeFolders.py file)
@@ -29,22 +30,22 @@ My Approach:
 
 List of Models used:
 
-ResNet 152 		(https://arxiv.org/abs/1512.03385)
-PNAS Net 5 Large	(https://arxiv.org/abs/1712.00559)
-ResNeXt-101 		(https://arxiv.org/abs/1611.05431)
-EfficentNet B3 	(https://arxiv.org/abs/1905.11946)
+ResNet 152 		(https://arxiv.org/abs/1512.03385)  
+PNAS Net 5 Large	(https://arxiv.org/abs/1712.00559)  
+ResNeXt-101 		(https://arxiv.org/abs/1611.05431)  
+EfficentNet B3 	(https://arxiv.org/abs/1905.11946)  
 
 All of the above models were pre-trained on ImageNet.
 The final Model is was an ensemble of the above 4 models.
 
 
 ## Training Environment
-I used Pytorch to train all my models and ran the code on a Deep Learning Server on Google Cloud.
+Used Pytorch to train all my models and ran the code on a Deep Learning Server on Google Cloud.
 All trainings were done on a single Nvidia K80 GPU, with batch sizes varying from 32 to 64
 Depending on the size of the model.
 
 ## Validation metrics
-I used the f1_score() and accuracy_score() from the sklearn.metrics module to get the weighted FI score on the validation set.
+Used the f1_score() and accuracy_score() from the sklearn.metrics module to get the weighted FI score on the validation set.
 
 ## Cyclical Learning Rate Schedule
 The learning rate schedule was based on Super Convergence , a concept taken from this paper: https://arxiv.org/abs/1708.07120
@@ -63,7 +64,7 @@ The model EfficentNet B3 was downloaded from the  Luke Melas repository
 
 ## Custom MLP Model Architecture
 
-All pretrained models had a final output layer of size 1000. I did not freeze the pretrained models.
+All pretrained models had a final output layer of size 1000. Did not freeze the pretrained models.
 This was followed by a custom 5 layer MLP designed by me.
 
 Each layer was followed by a Batch Normalization layer
@@ -71,22 +72,22 @@ Applied Parametric ReLU on each layer except the last two layers
 Input ~> 1024 ~> 512 ~> 256 ~> 128 ~> 5 ~> Softmax
 
 ## Optimizer and Loss Function
-I used Adam optimizer with starting learning rate of 0.00001 and then increasing up to 0.00012 with increments of x2 every 15 epochs then reducing it to 0.000001 over several epochs.
+Used Adam optimizer with starting learning rate of 0.00001 and then increasing up to 0.00012 with increments of x2 every 15 epochs then reducing it to 0.000001 over several epochs.
 
 Weight decay was set to 0.0001
 
-I used the nn.CrossEntropyLoss() function.
+Used the nn.CrossEntropyLoss() function.
 
 Trained each model to 80 epochs and used early stopping to avoid overfitting.
 
-Then I ran training on the entire train set (of 6252 images) for 3/4 epochs to boost model performance.
+Ran training on the entire train set (of 6252 images) for 3/4 epochs to boost model performance.
 
 The optimizer runs backward pass on both the Pre-Trained model and the MLP model in every step.
 
 
 ## Data Augmentation and Preprocessing
 
-I used the built-in Pytorch torchvision.transforms functions for Data Augmentation.
+Used the built-in Pytorch torchvision.transforms functions for Data Augmentation.
 
 Here they are :
 ```
@@ -109,7 +110,7 @@ Training_transforms = transforms.Compose([
 ```
 
 
-I normalized all inputs with mean  = [0.5 0.5 0.5] and standard deviation = [0.5 0.5 0.5]
+Normalized all inputs with mean  = [0.5 0.5 0.5] and standard deviation = [0.5 0.5 0.5]
 This helped in better model training, probably because the pretrained models were also trained with normalized inputs.
 
 
@@ -117,6 +118,6 @@ This helped in better model training, probably because the pretrained models wer
 ## Ensembling Predictions
 
 The outputs the final layer from each model were taken and added.
-Then I applied an argmax to find the index of the max value and that was considered as the class for the final prediction.
+Then applied an argmax to find the index of the max value and that was considered as the class for the final prediction.
 
 
